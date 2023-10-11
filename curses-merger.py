@@ -7,7 +7,6 @@ import curses
 
 def main(stdscr):
     directory = "./"
-    stdscr.nodelay(True)
     curses.curs_set(False)
 
     # init
@@ -82,15 +81,28 @@ def main(stdscr):
                 stdscr.addstr(BEGIN_WRITING+i, BEGIN_WRITING,
                               disp_ls[i], curses.A_STANDOUT if i == hl else curses.A_NORMAL)
 
+                # Adds space padding (to the right) after the displayed the text
+                stdscr.addstr(BEGIN_WRITING+i, BEGIN_WRITING+len(disp_ls[i]), ' '*(TEXT_WIDTH-len(disp_ls[i])))
+
+        # adds spacing below last element, if there are still more elements.
+        if len(disp_ls) < RECT_HEIGHT:
+            for i in range(BEGIN_WRITING+len(disp_ls), BEGIN_WRITING+TEXT_HEIGHT+1):
+                stdscr.addstr(i, BEGIN_WRITING, ' '*TEXT_WIDTH)
         # More files below!
         if offset <= len(ls)-TEXT_HEIGHT-2:
             stdscr.addstr(BEGIN_WRITING+RECT_HEIGHT-2,
                           BEGIN_WRITING-2, "⋁", RED)
+        else:
+            stdscr.addstr(BEGIN_WRITING+RECT_HEIGHT-2,
+                          BEGIN_WRITING-2, " ")
+
         # More files above!
         if offset != 0:
             stdscr.addstr(BEGIN_WRITING, BEGIN_WRITING -
                           2, "⋀", GREEN)
-
+        else:
+            stdscr.addstr(BEGIN_WRITING, BEGIN_WRITING -
+                          2, " ")
     def show_instructions(mode):
         # Instructions:
         if mode == "navigate":
@@ -125,8 +137,7 @@ def main(stdscr):
         key = stdscr.getch()
 
         # If key is pressed, update the screen.
-        if key != -1:
-            stdscr.clear()
+        if key != -1: 
             if key == 113:  # If q is pressed, forget everything, just quit.
                 break
             # Navigate mode
@@ -220,7 +231,6 @@ def main(stdscr):
             refresh_ls(mode)
             draw_highlight(mode)
             show_instructions(mode)
-
             stdscr.refresh()
 
 
