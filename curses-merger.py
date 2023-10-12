@@ -1,7 +1,7 @@
 from os import listdir, path
 from curses import wrapper
 from curses.textpad import rectangle
-from PyPDF2 import PdfWriter
+from pypdf import PdfWriter
 import curses
 
 
@@ -82,7 +82,8 @@ def main(stdscr):
                               disp_ls[i], curses.A_STANDOUT if i == hl else curses.A_NORMAL)
 
                 # Adds space padding (to the right) after the displayed the text
-                stdscr.addstr(BEGIN_WRITING+i, BEGIN_WRITING+len(disp_ls[i]), ' '*(TEXT_WIDTH-len(disp_ls[i])))
+                stdscr.addstr(BEGIN_WRITING+i, BEGIN_WRITING +
+                              len(disp_ls[i]), ' '*(TEXT_WIDTH-len(disp_ls[i])))
 
         # adds spacing below last element, if there are still more elements.
         if len(disp_ls) < RECT_HEIGHT:
@@ -103,6 +104,7 @@ def main(stdscr):
         else:
             stdscr.addstr(BEGIN_WRITING, BEGIN_WRITING -
                           2, " ")
+
     def show_instructions(mode):
         # Instructions:
         if mode == "navigate":
@@ -137,7 +139,7 @@ def main(stdscr):
         key = stdscr.getch()
 
         # If key is pressed, update the screen.
-        if key != -1: 
+        if key != -1:
             if key == 113:  # If q is pressed, forget everything, just quit.
                 break
             # Navigate mode
@@ -172,6 +174,8 @@ def main(stdscr):
                     # start by setting ls to only files.
                     ls = files
                     mode = "sort"
+                elif key == 24:
+                    mode = "pre-compile"
             elif mode == "sort":
                 if key == 1:  # ^A
                     # Back to navigate mode (everything will return)
