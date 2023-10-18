@@ -72,7 +72,7 @@ def main(stdscr):
     def draw_highlight(mode=False):
         global ls
         stdscr.addstr(
-            2, 1, f"{hl} {TEXT_HEIGHT} {offset} {directory}")  # debug DELETE.
+            2, 1, f"{hl} {TEXT_HEIGHT} {offset} {directory} {len(ls)}                 ")  # debug DELETE.
         for i in range(len(disp_ls)):
             if mode == "pre-compile":
                 stdscr.addstr(BEGIN_WRITING+i, BEGIN_WRITING,
@@ -211,8 +211,15 @@ def main(stdscr):
                     # hl is not on the top
                     elif (hl != 0):
                         hl -= 1
-                elif key == 100:
-                    del ls[offset+hl]
+                elif key == 100:  # D
+                    # No more items in list
+                    if (not len(ls)):
+                        stdscr.addstr(RECT_HEIGHT+BEGIN_WRITING, BEGIN_WRITING +
+                                      RECT_WIDTH//2, "THERE ARE NO MORE ITEMS TO DELETE!")
+                    elif (hl+offset < len(ls)):
+                        del ls[offset+hl]
+                    elif (hl+offset == len(ls)):
+                        hl -= 1
                 elif key == 24:  # compile
                     mode = "pre-compile"
             elif mode == "pre-compile":
